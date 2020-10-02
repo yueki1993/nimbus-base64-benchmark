@@ -33,6 +33,7 @@
 package com.nimbusds.jose.util;
 
 
+import com.google.common.io.BaseEncoding;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -90,8 +91,10 @@ public class MyBenchmark {
   }
 
   private static void assertMatch(String s) {
-    if (!Arrays.equals(java8B64UrlDecode(s), nimbusB64UrlDecode(s)) ||
-        !Arrays.equals(nimbusB64UrlDecode(s), nimbusB64UrlDecodeCodec(s))) {
+    if (!Arrays.equals(java8(s), nimbusBase64(s)) ||
+        !Arrays.equals(nimbusBase64(s), nimbusBase64Codec(s)) ||
+        !Arrays.equals(nimbusBase64Codec(s), guava(s)) ||
+        !Arrays.equals(guava(s), commons(s))) {
       throw new RuntimeException("unmatch!");
     }
   }
@@ -100,22 +103,22 @@ public class MyBenchmark {
   @Benchmark
   public void java8B64Decoder_small() {
     String b64 = getStringFromList(smallB64Strings);
-    java8B64UrlDecode(b64);
+    java8(b64);
   }
 
   @Benchmark
   public void java8B64Decoder_medium() {
     String b64 = getStringFromList(mediumB64Strings);
-    java8B64UrlDecode(b64);
+    java8(b64);
   }
 
   @Benchmark
   public void java8B64Decoder_large() {
     String b64 = getStringFromList(largeB64Strings);
-    java8B64UrlDecode(b64);
+    java8(b64);
   }
 
-  private static byte[] java8B64UrlDecode(String s) {
+  private static byte[] java8(String s) {
     return Base64.getUrlDecoder().decode(s);
   }
 
@@ -124,22 +127,22 @@ public class MyBenchmark {
   @Benchmark
   public void nimbusB64Decoder_small() {
     String b64 = getStringFromList(smallB64Strings);
-    nimbusB64UrlDecode(b64);
+    nimbusBase64(b64);
   }
 
   @Benchmark
   public void nimbusB64Decoder_medium() {
     String b64 = getStringFromList(mediumB64Strings);
-    nimbusB64UrlDecode(b64);
+    nimbusBase64(b64);
   }
 
   @Benchmark
   public void nimbusB64Decoder_large() {
     String b64 = getStringFromList(largeB64Strings);
-    nimbusB64UrlDecode(b64);
+    nimbusBase64(b64);
   }
 
-  private static byte[] nimbusB64UrlDecode(String s) {
+  private static byte[] nimbusBase64(String s) {
     return new com.nimbusds.jose.util.Base64(s).decode();
   }
 
@@ -148,25 +151,74 @@ public class MyBenchmark {
   @Benchmark
   public void nimbusB64DecoderCodec_small() {
     String b64 = getStringFromList(smallB64Strings);
-    nimbusB64UrlDecodeCodec(b64);
+    nimbusBase64Codec(b64);
   }
 
   @Benchmark
   public void nimbusB64DecoderCodec_medium() {
     String b64 = getStringFromList(mediumB64Strings);
-    nimbusB64UrlDecodeCodec(b64);
+    nimbusBase64Codec(b64);
   }
 
   @Benchmark
   public void nimbusB64DecoderCodec_large() {
     String b64 = getStringFromList(largeB64Strings);
-    nimbusB64UrlDecodeCodec(b64);
+    nimbusBase64Codec(b64);
   }
 
-  private static byte[] nimbusB64UrlDecodeCodec(String s) {
+  private static byte[] nimbusBase64Codec(String s) {
     return Base64Codec.decode(s);
   }
 
+  // =================== benchmark guava Base64 ====================================
+  @Benchmark
+  public void guava_small() {
+    String b64 = getStringFromList(smallB64Strings);
+    guava(b64);
+  }
+
+  @Benchmark
+  public void guava_medium() {
+    String b64 = getStringFromList(mediumB64Strings);
+    guava(b64);
+  }
+
+  @Benchmark
+  public void guava_large() {
+    String b64 = getStringFromList(largeB64Strings);
+    guava(b64);
+  }
+
+  private static byte[] guava(String s) {
+    return BaseEncoding.base64Url().decode(s);
+  }
+
+
+  // =================== benchmark commons Base64 ====================================
+  @Benchmark
+  public void commons_small() {
+    String b64 = getStringFromList(smallB64Strings);
+    commons(b64);
+  }
+
+  @Benchmark
+  public void commons_medium() {
+    String b64 = getStringFromList(mediumB64Strings);
+    commons(b64);
+  }
+
+  @Benchmark
+  public void commons_large() {
+    String b64 = getStringFromList(largeB64Strings);
+    commons(b64);
+  }
+
+  private static final org.apache.commons.codec.binary.Base64 COMMONS_B64_URL
+      = new org.apache.commons.codec.binary.Base64(true);
+
+  private static byte[] commons(String s) {
+    return COMMONS_B64_URL.decode(s);
+  }
 
   private String getStringFromList(List<String> list) {
     String r = list.get(pos++);
