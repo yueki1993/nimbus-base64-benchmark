@@ -31,14 +31,78 @@
 
 package com.yueki1993;
 
-import org.openjdk.jmh.annotations.Benchmark;
 
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
+
+@State(Scope.Thread)
+@Fork(1)
 public class MyBenchmark {
 
-    @Benchmark
-    public void testMethod() {
-        // This is a demo/sample template for building your JMH benchmarks. Edit as needed.
-        // Put your benchmark code here.
+  private static final int SMALL_LENGTH = 100;
+
+  private static final int MEDIUM_LENGTH = 1000;
+
+  private static final int LARGE_LENGTH = 10000;
+
+  private static final int N = 10000; // the number of test strings for each size string 
+
+  private List<String> smallB64Strings = new ArrayList<>();
+
+  private List<String> mediumB64Strings = new ArrayList<>();
+
+  private List<String> largeB64Strings = new ArrayList<>();
+
+  private int pos = 0;
+
+
+  @Setup
+  public void setup() {
+    for (int i = 0; i < N; i++) {
+      smallB64Strings.add(getRandomB64UrlString(SMALL_LENGTH));
+      mediumB64Strings.add(getRandomB64UrlString(MEDIUM_LENGTH));
+      largeB64Strings.add(getRandomB64UrlString(LARGE_LENGTH));
     }
+  }
+
+  private static String getRandomB64UrlString(int len) {
+    return Base64.getUrlEncoder().encodeToString(RandomStringUtils.random(len).getBytes());
+  }
+
+  // =================== benchmark Java8 java.util.Base64 ====================================
+
+  @Benchmark
+  public void java8B64Decoder_small() {
+    String b64 = getStringFromList(smallB64Strings);
+    Base64.getUrlDecoder().decode(b64);
+  }
+
+  @Benchmark
+  public void java8B64Decoder_medium() {
+    String b64 = getStringFromList(mediumB64Strings);
+    Base64.getUrlDecoder().decode(b64);
+  }
+
+  @Benchmark
+  public void java8B64Decoder_large() {
+    String b64 = getStringFromList(largeB64Strings);
+    Base64.getUrlDecoder().decode(b64);
+  }
+
+
+  private String getStringFromList(List<String> list) {
+    String r = list.get(pos++);
+    if (pos == N) {
+      pos = 0;
+    }
+    return r;
+  }
 
 }
