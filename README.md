@@ -10,7 +10,7 @@ to get more benchmarks of java's base64 libraries.
 This benchmark uses [jmh](https://openjdk.java.net/projects/code-tools/jmh/).
 ```bash
 $ mvn clean package
-$ java -jar target/benchmark.jar
+$ java -jar target/benchmarks.jar
 ```
 
 ## Target Libraries
