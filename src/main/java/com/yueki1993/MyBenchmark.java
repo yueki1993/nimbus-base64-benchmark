@@ -33,6 +33,7 @@ package com.yueki1993;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -52,7 +53,7 @@ public class MyBenchmark {
 
   private static final int LARGE_LENGTH = 10000;
 
-  private static final int N = 10000; // the number of test strings for each size string 
+  private static final int N = 10000; // the number of test strings for each length
 
   private List<String> smallB64Strings = new ArrayList<>();
 
@@ -62,13 +63,24 @@ public class MyBenchmark {
 
   private int pos = 0;
 
+  private static final boolean NEED_ASSERTION = false;
 
   @Setup
   public void setup() {
+    System.out.println("setup");
     for (int i = 0; i < N; i++) {
       smallB64Strings.add(getRandomB64UrlString(SMALL_LENGTH));
       mediumB64Strings.add(getRandomB64UrlString(MEDIUM_LENGTH));
       largeB64Strings.add(getRandomB64UrlString(LARGE_LENGTH));
+    }
+
+    if (NEED_ASSERTION) {
+      System.out.println("assert");
+      for (int i = 0; i < N; i++) {
+        assertMatch(smallB64Strings.get(i));
+        assertMatch(mediumB64Strings.get(i));
+        assertMatch(largeB64Strings.get(i));
+      }
     }
   }
 
@@ -76,24 +88,57 @@ public class MyBenchmark {
     return Base64.getUrlEncoder().encodeToString(RandomStringUtils.random(len).getBytes());
   }
 
+  private static void assertMatch(String s) {
+    if (!Arrays.equals(java8B64UrlDecode(s), nimbusB64UrlDecode(s))) {
+      throw new RuntimeException("unmatch!");
+    }
+  }
   // =================== benchmark Java8 java.util.Base64 ====================================
 
   @Benchmark
   public void java8B64Decoder_small() {
     String b64 = getStringFromList(smallB64Strings);
-    Base64.getUrlDecoder().decode(b64);
+    java8B64UrlDecode(b64);
   }
 
   @Benchmark
   public void java8B64Decoder_medium() {
     String b64 = getStringFromList(mediumB64Strings);
-    Base64.getUrlDecoder().decode(b64);
+    java8B64UrlDecode(b64);
   }
 
   @Benchmark
   public void java8B64Decoder_large() {
     String b64 = getStringFromList(largeB64Strings);
-    Base64.getUrlDecoder().decode(b64);
+    java8B64UrlDecode(b64);
+  }
+
+  private static byte[] java8B64UrlDecode(String s) {
+    return Base64.getUrlDecoder().decode(s);
+  }
+
+  // =================== benchmark nimbus base64 ====================================
+
+  @Benchmark
+  public void nimbusB64Decoder_small() {
+    String b64 = getStringFromList(smallB64Strings);
+    nimbusB64UrlDecode(b64);
+  }
+
+  @Benchmark
+  public void nimbusB64Decoder_medium() {
+    String b64 = getStringFromList(mediumB64Strings);
+    nimbusB64UrlDecode(b64);
+  }
+
+  @Benchmark
+  public void nimbusB64Decoder_large() {
+    String b64 = getStringFromList(largeB64Strings);
+    nimbusB64UrlDecode(b64);
+  }
+
+  private static byte[] nimbusB64UrlDecode(String s) {
+    return new com.nimbusds.jose.util.Base64(s).decode();
   }
 
 
