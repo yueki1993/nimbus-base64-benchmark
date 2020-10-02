@@ -29,7 +29,7 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// same package as nimbus' Base64Codec
+// same package as nimbus' Base64Codec since it is declared as package-private
 package com.nimbusds.jose.util;
 
 
