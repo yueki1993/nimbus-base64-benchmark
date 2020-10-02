@@ -29,7 +29,8 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.yueki1993;
+// same package as nimbus' Base64Codec
+package com.nimbusds.jose.util;
 
 
 import java.util.ArrayList;
@@ -89,7 +90,8 @@ public class MyBenchmark {
   }
 
   private static void assertMatch(String s) {
-    if (!Arrays.equals(java8B64UrlDecode(s), nimbusB64UrlDecode(s))) {
+    if (!Arrays.equals(java8B64UrlDecode(s), nimbusB64UrlDecode(s)) ||
+        !Arrays.equals(nimbusB64UrlDecode(s), nimbusB64UrlDecodeCodec(s))) {
       throw new RuntimeException("unmatch!");
     }
   }
@@ -141,6 +143,30 @@ public class MyBenchmark {
     return new com.nimbusds.jose.util.Base64(s).decode();
   }
 
+  // =================== benchmark nimbus Base64Codec ====================================
+
+  @Benchmark
+  public void nimbusB64DecoderCodec_small() {
+    String b64 = getStringFromList(smallB64Strings);
+    nimbusB64UrlDecodeCodec(b64);
+  }
+
+  @Benchmark
+  public void nimbusB64DecoderCodec_medium() {
+    String b64 = getStringFromList(mediumB64Strings);
+    nimbusB64UrlDecodeCodec(b64);
+  }
+
+  @Benchmark
+  public void nimbusB64DecoderCodec_large() {
+    String b64 = getStringFromList(largeB64Strings);
+    nimbusB64UrlDecodeCodec(b64);
+  }
+
+  private static byte[] nimbusB64UrlDecodeCodec(String s) {
+    return Base64Codec.decode(s);
+  }
+
 
   private String getStringFromList(List<String> list) {
     String r = list.get(pos++);
@@ -149,5 +175,4 @@ public class MyBenchmark {
     }
     return r;
   }
-
 }
