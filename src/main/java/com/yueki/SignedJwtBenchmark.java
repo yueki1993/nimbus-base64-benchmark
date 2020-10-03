@@ -156,6 +156,19 @@ public class SignedJwtBenchmark {
     parseSignedJwt(s);
   }
 
+  @Benchmark
+  public void JwtParse_medium() {
+    String s = getStringFromList(mediumJwtStrings);
+    parseSignedJwt(s);
+  }
+
+  @Benchmark
+  public void JwtParse_large() {
+    String s = getStringFromList(largeJwtStrings);
+    parseSignedJwt(s);
+  }
+
+
   // =================== benchmark jwtProcessor ==============================
   @Benchmark
   public void JwtProcessor_small() {
