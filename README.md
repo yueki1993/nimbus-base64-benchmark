@@ -10,7 +10,7 @@ to get more benchmarks of java's base64 libraries.
 This benchmark uses [jmh](https://openjdk.java.net/projects/code-tools/jmh/).
 ```bash
 $ mvn clean package
-$ java -jar target/benchmarks.jar
+$ java -jar target/benchmarks.jar Base64Benchmark
 ```
 
 ## Target Libraries
@@ -59,5 +59,22 @@ MyBenchmark.nimbusB64DecoderCodec_large   thrpt    5     2622.133 ±     8.770  
 MyBenchmark.nimbusB64Decoder_large        thrpt    5     2554.354 ±     8.700  ops/s
 ```
 
+---
+
+## Benchmark and profile SignedJwt Parsing
+[Async-profiler](https://github.com/jvm-profiling-tools/async-profiler) is needed for profiling.
+Typically for macos,
+```bash
+$ cd /tmp/
+$ wget https://github.com/jvm-profiling-tools/async-profiler/releases/download/v1.8.1/async-profiler-1.8.1-macos-x64.tar.gz
+$ tar zxvf async-profiler-1.8.1-macos-x64.tar.gz
+```
+
+### How to Run
+```bash
+$ mvn clean package
+$ java -jar target/benchmarks.jar SignedJwtBenchmark -prof "async:libPath=/tmp/async-profiler-1.8.1-macos-x64/build/libasyncProfiler.so;output=flamegraph" 
+```
   
+### Result
 
