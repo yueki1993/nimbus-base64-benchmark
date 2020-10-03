@@ -99,6 +99,8 @@ Signed with RSA2048bit.
 
 
 ### Result
+Checkout this repo and view the local svg files because browsers block svg scripts.
+
 - [small](./com.yueki.SignedJwtBenchmark.JwtParse_small-Throughput/flame-cpu-forward.svg)
 - [medium](./com.yueki.SignedJwtBenchmark.JwtParse_medium-Throughput/flame-cpu-forward.svg)
 - [large](./com.yueki.SignedJwtBenchmark.JwtParse_large-Throughput/flame-cpu-forward.svg)
