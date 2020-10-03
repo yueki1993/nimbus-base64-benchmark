@@ -47,7 +47,7 @@ import org.openjdk.jmh.annotations.State;
 
 @State(Scope.Thread)
 @Fork(1)
-public class MyBenchmark {
+public class Base64Benchmark {
 
   private static final int SMALL_LENGTH = 100;
 
