@@ -10,7 +10,7 @@ to get more benchmarks of java's base64 libraries.
 This benchmark uses [jmh](https://openjdk.java.net/projects/code-tools/jmh/).
 ```bash
 $ mvn clean package
-$ java -jar target/benchmarks.jar
+$ java -jar target/benchmarks.jar Base64Benchmark
 ```
 
 ## Target Libraries
@@ -59,5 +59,46 @@ MyBenchmark.nimbusB64DecoderCodec_large   thrpt    5     2622.133 ±     8.770  
 MyBenchmark.nimbusB64Decoder_large        thrpt    5     2554.354 ±     8.700  ops/s
 ```
 
-  
+---
 
+## Benchmark and profile SignedJwt Parsing
+[Async-profiler](https://github.com/jvm-profiling-tools/async-profiler) is needed for profiling.
+Typically for MacOS,
+```bash
+$ cd /tmp/
+$ wget https://github.com/jvm-profiling-tools/async-profiler/releases/download/v1.8.1/async-profiler-1.8.1-macos-x64.tar.gz
+$ tar zxvf async-profiler-1.8.1-macos-x64.tar.gz
+```
+
+### How to Run
+```bash
+$ mvn clean package
+$ java -jar target/benchmarks.jar SignedJwtBenchmark -prof "async:libPath=/tmp/async-profiler-1.8.1-macos-x64/build/libasyncProfiler.so;output=flamegraph" 
+```
+Modify `libPath` if needed.
+
+## Test Data
+Signed with RSA2048bit.
+```java
+    JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+        .subject(RandomStringUtils.randomAscii(len))
+        .issueTime(new Date(123000L))
+        .issuer("https://c2id.com")
+        .claim("scope", "openid")
+        .build();
+
+    JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256).
+        keyID("1").
+        jwkURL(new URI("https://c2id.com/jwks.json")).
+        build();
+```
+`len` is
+- small: 100
+- medium: 1000
+- large: 10000  
+
+
+### Result
+- [small](./com.yueki.SignedJwtBenchmark.JwtParse_small-Throughput/flame-cpu-forward.svg)
+- [medium](./com.yueki.SignedJwtBenchmark.JwtParse_medium-Throughput/flame-cpu-forward.svg)
+- [large](./com.yueki.SignedJwtBenchmark.JwtParse_large-Throughput/flame-cpu-forward.svg)
