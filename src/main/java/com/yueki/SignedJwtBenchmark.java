@@ -53,7 +53,7 @@ public class SignedJwtBenchmark {
 
   private static final int LARGE_LENGTH = 10000;
 
-  private static final int N = 10; // the number of test strings for each length
+  private static final int N = 100; // the number of test strings for each length
 
   private List<String> smallJwtStrings = new ArrayList<>();
 
@@ -61,9 +61,7 @@ public class SignedJwtBenchmark {
 
   private List<String> largeJwtStrings = new ArrayList<>();
 
-  private int pos = 0;
 
-  private static final boolean NEED_ASSERTION = false;
   private RSAPublicKey publicKey;
   private RSAPrivateKey privateKey;
 
@@ -140,6 +138,7 @@ public class SignedJwtBenchmark {
     parseSignedJwt(s);
   }
 
+  private int pos = 0;
 
   private String getStringFromList(List<String> list) {
     String r = list.get(pos++);
