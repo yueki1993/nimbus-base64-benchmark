@@ -63,7 +63,7 @@ MyBenchmark.nimbusB64Decoder_large        thrpt    5     2554.354 ±     8.700  
 
 ## Benchmark and profile SignedJwt Parsing
 [Async-profiler](https://github.com/jvm-profiling-tools/async-profiler) is needed for profiling.
-Typically for macos,
+Typically for MacOS,
 ```bash
 $ cd /tmp/
 $ wget https://github.com/jvm-profiling-tools/async-profiler/releases/download/v1.8.1/async-profiler-1.8.1-macos-x64.tar.gz
@@ -99,4 +99,6 @@ Signed with RSA2048bit.
 
 
 ### Result
-aaa
+- [small](./com.yueki.SignedJwtBenchmark.JwtParse_small-Throughput/flame-cpu-forward.svg)
+- [medium](./com.yueki.SignedJwtBenchmark.JwtParse_medium-Throughput/flame-cpu-forward.svg)
+- [large](./com.yueki.SignedJwtBenchmark.JwtParse_large-Throughput/flame-cpu-forward.svg)
