@@ -106,7 +106,7 @@ public class SignedJwtBenchmark {
     return signedJWT.serialize();
   }
 
-  private SignedJWT parseSignedJwt(String serializedJWT) {
+  private JWTClaimsSet parseSignedJwt(String serializedJWT) {
     try {
       SignedJWT signedJWT = SignedJWT.parse(serializedJWT);
 
@@ -114,7 +114,7 @@ public class SignedJwtBenchmark {
       if (!signedJWT.verify(verifier)) {
         throw new RuntimeException("invalid token!");
       }
-      return signedJWT;
+      return signedJWT.getJWTClaimsSet();
 
     } catch (Exception e) {
       throw new RuntimeException(e);
