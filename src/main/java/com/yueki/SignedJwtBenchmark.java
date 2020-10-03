@@ -6,8 +6,17 @@ import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
+import com.nimbusds.jose.proc.SimpleSecurityContext;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import java.net.URI;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -64,6 +73,7 @@ public class SignedJwtBenchmark {
 
   private RSAPublicKey publicKey;
   private RSAPrivateKey privateKey;
+  private DefaultJWTProcessor<SecurityContext> jwtProcessor;
 
   @Setup
   public void setup() throws Exception {
@@ -81,6 +91,18 @@ public class SignedJwtBenchmark {
       mediumJwtStrings.add(getSignedJwt(MEDIUM_LENGTH));
       largeJwtStrings.add(getSignedJwt(LARGE_LENGTH));
     }
+
+    JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(
+        new RSAKey.Builder(publicKey)
+            .algorithm(JWSAlgorithm.RS256)
+            .keyUse(KeyUse.SIGNATURE)
+            .keyID("1")
+            .build()
+    ));
+    JWSVerificationKeySelector<SecurityContext> keySelector = new JWSVerificationKeySelector<>(
+        JWSAlgorithm.RS256, jwks);
+    jwtProcessor = new DefaultJWTProcessor<>();
+    jwtProcessor.setJWSKeySelector(keySelector);
   }
 
 
@@ -118,6 +140,14 @@ public class SignedJwtBenchmark {
       throw new RuntimeException(e);
     }
   }
+
+  private JWTClaimsSet parseSignedJwtWithJWKSet(String serializedJWT) {
+    try {
+      return jwtProcessor.process(serializedJWT, new SimpleSecurityContext());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
   // =================== benchmark ====================================
 
   @Benchmark
@@ -126,17 +156,25 @@ public class SignedJwtBenchmark {
     parseSignedJwt(s);
   }
 
+  // =================== benchmark jwtProcessor ==============================
   @Benchmark
-  public void JwtParse_medium() {
-    String s = getStringFromList(mediumJwtStrings);
-    parseSignedJwt(s);
+  public void JwtProcessor_small() {
+    String s = getStringFromList(smallJwtStrings);
+    parseSignedJwtWithJWKSet(s);
   }
 
   @Benchmark
-  public void JwtParse_large() {
-    String s = getStringFromList(largeJwtStrings);
-    parseSignedJwt(s);
+  public void JwtProcessor_medium() {
+    String s = getStringFromList(mediumJwtStrings);
+    parseSignedJwtWithJWKSet(s);
   }
+
+  @Benchmark
+  public void JwtProcessor_large() {
+    String s = getStringFromList(largeJwtStrings);
+    parseSignedJwtWithJWKSet(s);
+  }
+
 
   private int pos = 0;
 
