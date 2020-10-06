@@ -14,6 +14,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.JWSVerificationKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jose.proc.SimpleSecurityContext;
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
@@ -215,14 +216,23 @@ public class SignedJwtBenchmark {
       if (!signedJWT.verify(verifier)) {
         throw new RuntimeException("invalid token!");
       }
-      signedJWT.getJWTClaimsSet();
-      signedJWT.getJWTClaimsSet();
+      getClaimsSet1(signedJWT);
+      getClaimsSet2(signedJWT);
 
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
 
+  private JWTClaimsSet getClaimsSet1(JWT jwt) throws Exception {
+    // for flamegraph visibility...
+    return jwt.getJWTClaimsSet();
+  }
+
+  private JWTClaimsSet getClaimsSet2(JWT jwt) throws Exception {
+    // for flamegraph visibility...
+    return jwt.getJWTClaimsSet();
+  }
 
   private int pos = 0;
 
