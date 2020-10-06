@@ -116,9 +116,9 @@ Also compared DefaultJWTProcessor + JWSVerificationKeySelector.
 ### Result (for Pull Request: cache result of getJwtClaimsSet)
 #### before
 ```
-SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_small   thrpt    5  3956.079 ± 2450.561  ops/s
-SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_medium  thrpt    5  2915.363 ±  767.164  ops/s
-SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_large   thrpt    5   635.333 ±  194.347  ops/s
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_small          thrpt    5  4127.012 ± 1923.019  ops/s
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_medium         thrpt    5  3438.350 ± 2552.828  ops/s
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_large          thrpt    5   772.472 ±  426.832  ops/s
 ```
 
 #### after
