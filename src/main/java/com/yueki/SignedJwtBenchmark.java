@@ -191,19 +191,19 @@ public class SignedJwtBenchmark {
 
   // =================== benchmark for Pull Request(cache getJwtClaimsSet) ==============================
   @Benchmark
-  public void JwtParse_callGetJwtClaimsSetTwice_small() {
+  public void JwtParse_callGetJwtClaimsSetTwice_patched_small() {
     String s = getStringFromList(smallJwtStrings);
     callGetJwtClaimsSetTwice(s);
   }
 
   @Benchmark
-  public void JwtParse_callGetJwtClaimsSetTwice_medium() {
+  public void JwtParse_callGetJwtClaimsSetTwice_patched_medium() {
     String s = getStringFromList(mediumJwtStrings);
     callGetJwtClaimsSetTwice(s);
   }
 
   @Benchmark
-  public void JwtParse_callGetJwtClaimsSetTwice_large() {
+  public void JwtParse_callGetJwtClaimsSetTwice_patched_large() {
     String s = getStringFromList(largeJwtStrings);
     callGetJwtClaimsSetTwice(s);
   }

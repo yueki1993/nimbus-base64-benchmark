@@ -62,7 +62,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
         <dependency>
             <groupId>com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
-            <version>9.0.1</version>
+            <version>9.0.2-SNAPSHOT</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
