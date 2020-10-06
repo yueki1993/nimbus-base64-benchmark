@@ -113,4 +113,14 @@ Also compared DefaultJWTProcessor + JWSVerificationKeySelector.
 
 `KeyConverter#toJavaKeys` would be the next bottleneck if we solve base64/json performance issue. 
 
+### Result (for Pull Request: cache result of getJwtClaimsSet)
+#### before
+```
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_small   thrpt    5  3956.079 ± 2450.561  ops/s
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_medium  thrpt    5  2915.363 ±  767.164  ops/s
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_large   thrpt    5   635.333 ±  194.347  ops/s
+```
+
+#### after
+aaa
 

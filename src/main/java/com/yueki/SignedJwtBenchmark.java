@@ -188,6 +188,41 @@ public class SignedJwtBenchmark {
     parseSignedJwtWithJWKSet(s);
   }
 
+  // =================== benchmark for Pull Request(cache getJwtClaimsSet) ==============================
+  @Benchmark
+  public void JwtParse_callGetJwtClaimsSetTwice_small() {
+    String s = getStringFromList(smallJwtStrings);
+    callGetJwtClaimsSetTwice(s);
+  }
+
+  @Benchmark
+  public void JwtParse_callGetJwtClaimsSetTwice_medium() {
+    String s = getStringFromList(mediumJwtStrings);
+    callGetJwtClaimsSetTwice(s);
+  }
+
+  @Benchmark
+  public void JwtParse_callGetJwtClaimsSetTwice_large() {
+    String s = getStringFromList(largeJwtStrings);
+    callGetJwtClaimsSetTwice(s);
+  }
+
+  private void callGetJwtClaimsSetTwice(String s) {
+    try {
+      SignedJWT signedJWT = SignedJWT.parse(s);
+
+      JWSVerifier verifier = new RSASSAVerifier(publicKey);
+      if (!signedJWT.verify(verifier)) {
+        throw new RuntimeException("invalid token!");
+      }
+      signedJWT.getJWTClaimsSet();
+      signedJWT.getJWTClaimsSet();
+
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 
   private int pos = 0;
 
