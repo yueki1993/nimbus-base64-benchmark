@@ -113,4 +113,28 @@ Also compared DefaultJWTProcessor + JWSVerificationKeySelector.
 
 `KeyConverter#toJavaKeys` would be the next bottleneck if we solve base64/json performance issue. 
 
+### Result (for Pull Request: cache result of getJwtClaimsSet)
+[PullRequest](http://example.com)
 
+
+```
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_small   thrpt    5  15658.164 ± 37.128  ops/s
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_medium  thrpt    5   8253.974 ± 25.282  ops/s
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_large   thrpt    5   1326.055 ±  1.615  ops/s
+```
+
+- [small](./com.yueki.SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_small-Throughput)
+- [medium](./com.yueki.SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_medium-Throughput)
+- [large](./com.yueki.SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_large-Throughput)
+
+
+#### after
+```
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_patched_small   thrpt    5  16699.449 ±  22.194  ops/s
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_patched_medium  thrpt    5  10538.920 ±  32.525  ops/s
+SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_patched_large   thrpt    5   2054.352 ± 893.905  ops/s
+```
+
+- [small](./com.yueki.SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_patched_small-Throughput)
+- [medium](./com.yueki.SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_patched_medium-Throughput)
+- [large](./com.yueki.SignedJwtBenchmark.JwtParse_callGetJwtClaimsSetTwice_patched_large-Throughput)

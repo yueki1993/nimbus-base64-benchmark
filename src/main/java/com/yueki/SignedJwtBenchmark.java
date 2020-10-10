@@ -14,6 +14,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.JWSVerificationKeySelector;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jose.proc.SimpleSecurityContext;
+import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
@@ -188,6 +189,50 @@ public class SignedJwtBenchmark {
     parseSignedJwtWithJWKSet(s);
   }
 
+  // =================== benchmark for Pull Request(cache getJwtClaimsSet) ==============================
+  @Benchmark
+  public void JwtParse_callGetJwtClaimsSetTwice_patched_small() {
+    String s = getStringFromList(smallJwtStrings);
+    callGetJwtClaimsSetTwice(s);
+  }
+
+  @Benchmark
+  public void JwtParse_callGetJwtClaimsSetTwice_patched_medium() {
+    String s = getStringFromList(mediumJwtStrings);
+    callGetJwtClaimsSetTwice(s);
+  }
+
+  @Benchmark
+  public void JwtParse_callGetJwtClaimsSetTwice_patched_large() {
+    String s = getStringFromList(largeJwtStrings);
+    callGetJwtClaimsSetTwice(s);
+  }
+
+  private void callGetJwtClaimsSetTwice(String s) {
+    try {
+      SignedJWT signedJWT = SignedJWT.parse(s);
+
+      JWSVerifier verifier = new RSASSAVerifier(publicKey);
+      if (!signedJWT.verify(verifier)) {
+        throw new RuntimeException("invalid token!");
+      }
+      getClaimsSet1(signedJWT);
+      getClaimsSet2(signedJWT);
+
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private JWTClaimsSet getClaimsSet1(JWT jwt) throws Exception {
+    // for flamegraph visibility...
+    return jwt.getJWTClaimsSet();
+  }
+
+  private JWTClaimsSet getClaimsSet2(JWT jwt) throws Exception {
+    // for flamegraph visibility...
+    return jwt.getJWTClaimsSet();
+  }
 
   private int pos = 0;
 
