@@ -94,7 +94,8 @@ public class Base64Benchmark {
     if (!Arrays.equals(java8(s), nimbusBase64(s)) ||
         !Arrays.equals(nimbusBase64(s), nimbusBase64Codec(s)) ||
         !Arrays.equals(nimbusBase64Codec(s), guava(s)) ||
-        !Arrays.equals(guava(s), commons(s))) {
+        !Arrays.equals(guava(s), commons(s)) ||
+        !Arrays.equals(commons(s), tink(s))) {
       throw new RuntimeException("unmatch!");
     }
   }
@@ -218,6 +219,30 @@ public class Base64Benchmark {
 
   private static byte[] commons(String s) {
     return COMMONS_B64_URL.decode(s);
+  }
+
+  // =================== benchmark tink Base64 ====================================
+  @Benchmark
+  public void tink_small() {
+    String b64 = getStringFromList(smallB64Strings);
+    tink(b64);
+  }
+
+  @Benchmark
+  public void tink_medium() {
+    String b64 = getStringFromList(mediumB64Strings);
+    tink(b64);
+  }
+
+  @Benchmark
+  public void tink_large() {
+    String b64 = getStringFromList(largeB64Strings);
+    tink(b64);
+  }
+
+
+  private static byte[] tink(String s) {
+    return com.google.crypto.tink.subtle.Base64.urlSafeDecode(s);
   }
 
   private String getStringFromList(List<String> list) {
