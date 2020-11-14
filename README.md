@@ -19,6 +19,7 @@ $ java -jar target/benchmarks.jar Base64Benchmark
 - nimbus Base64Codec (`com.nimbusds.jose.util.Base64Codec`)
 - guava (`com.google.common.io.BaseEncoding`)
 - commons-codec (`org.apache.commons.codec.binary.Base64`)
+- tink (`com.google.crypto.tink.subtle.Base64.urlSafeDecode`)
 
 ## Data Set
 - small: randomly generated strings of length 100 
@@ -36,27 +37,36 @@ Each data set has 10,000 strings.
 
 ## Result
 ```
-MyBenchmark.java8B64Decoder_small         thrpt    5  1299884.438 ±  5062.251  ops/s
-MyBenchmark.guava_small                   thrpt    5  1096650.953 ± 10784.578  ops/s
-MyBenchmark.nimbusB64DecoderCodec_small   thrpt    5   254416.835 ±  1665.612  ops/s
-MyBenchmark.nimbusB64Decoder_small        thrpt    5   251448.108 ±   820.425  ops/s
-MyBenchmark.commons_small                 thrpt    5   216649.714 ±   561.180  ops/s
+java8B64Decoder_small               thrpt    5  1299884.438 ±  5062.251  ops/s
+tink_small                          thrpt    5  1059600.451 ± 6448.069  ops/s
+guava_small                         thrpt    5  1096650.953 ± 10784.578  ops/s
+nimbusB64Decoder_small(v5.14)       thrpt    5   477790.046 ±  4145.475  ops/s
+nimbusB64DecoderCodec_small(5.14)   thrpt    5   444044.296 ±  6974.450  ops/s
+nimbusB64DecoderCodec_small         thrpt    5   254416.835 ±  1665.612  ops/s
+nimbusB64Decoder_small              thrpt    5   251448.108 ±   820.425  ops/s
+commons_small                       thrpt    5   216649.714 ±   561.180  ops/s
 ```
 
 ```
-MyBenchmark.java8B64Decoder_medium        thrpt    5   129123.483 ±   627.562  ops/s
-MyBenchmark.guava_medium                  thrpt    5    99935.088 ±   267.320  ops/s
-MyBenchmark.commons_medium                thrpt    5    37540.252 ±   120.918  ops/s
-MyBenchmark.nimbusB64Decoder_medium       thrpt    5    25314.663 ±   101.593  ops/s
-MyBenchmark.nimbusB64DecoderCodec_medium  thrpt    5    24507.906 ±   103.547  ops/s
+java8B64Decoder_medium              thrpt    5   129123.483 ±   627.562  ops/s
+guava_medium                        thrpt    5    99935.088 ±   267.320  ops/s
+tink_medium                         thrpt    5    96424.549 ±  662.628  ops/s
+nimbusB64DecoderCodec_medium(v5.14) thrpt    5    50467.131 ±   263.766  ops/s
+nimbusB64Decoder_medium(V5.14)      thrpt    5    45153.526 ±   271.657  ops/s
+commons_medium                      thrpt    5    37540.252 ±   120.918  ops/s
+nimbusB64Decoder_medium             thrpt    5    25314.663 ±   101.593  ops/s
+nimbusB64DecoderCodec_medium        thrpt    5    24507.906 ±   103.547  ops/s
 ```
 
 ```
-MyBenchmark.java8B64Decoder_large         thrpt    5    14220.810 ±    71.518  ops/s
-MyBenchmark.guava_large                   thrpt    5    11014.160 ±    51.124  ops/s
-MyBenchmark.commons_large                 thrpt    5     4538.505 ±   119.857  ops/s
-MyBenchmark.nimbusB64DecoderCodec_large   thrpt    5     2622.133 ±     8.770  ops/s
-MyBenchmark.nimbusB64Decoder_large        thrpt    5     2554.354 ±     8.700  ops/s
+java8B64Decoder_large               thrpt    5    14220.810 ±    71.518  ops/s
+guava_large                         thrpt    5    11014.160 ±    51.124  ops/s
+tink_large                          thrpt    5     9853.573 ±   39.492  ops/s
+nimbusB64DecoderCodec_large(v5.14)  thrpt    5     4992.602 ±    30.583  ops/s
+nimbusB64Decoder_large(v5.14)       thrpt    5     4878.868 ±    22.812  ops/s
+commons_large                       thrpt    5     4538.505 ±   119.857  ops/s
+nimbusB64DecoderCodec_large         thrpt    5     2622.133 ±     8.770  ops/s
+nimbusB64Decoder_large              thrpt    5     2554.354 ±     8.700  ops/s
 ```
 
 ---
